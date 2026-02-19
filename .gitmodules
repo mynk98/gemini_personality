@@ -1,0 +1,3 @@
+[submodule "architect"]
+	path = architect
+	url = https://github.com/mynk98/architect.git

@@ -1,0 +1,51 @@
+2026-02-19 07:29:30 | INFO | controller | args: Namespace(host='0.0.0.0', port=8081, model_path='tencent/Hunyuan3D-2mini', tex_model_path='tencent/Hunyuan3D-2', device='mps', limit_model_concurrency=5, enable_tex=False)
+2026-02-19 07:29:30 | INFO | controller | Loading the model tencent/Hunyuan3D-2mini on worker 6f0cfb ...
+2026-02-19 07:29:30 | INFO | hy3dgen.shapgen | Try to load model from local path: /Users/abhisheksonkar/.cache/hy3dgen/tencent/Hunyuan3D-2mini/hunyuan3d-dit-v2-mini-turbo
+2026-02-19 07:29:30 | INFO | hy3dgen.shapgen | Model path not exists, try to download from huggingface
+2026-02-19 07:29:31 | ERROR | stderr | Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]
+2026-02-19 07:57:14 | ERROR | stderr | Fetching 3 files:  33%|███▎      | 1/3 [27:43<55:26, 1663.05s/it]
+2026-02-19 07:57:14 | ERROR | stderr | 
+2026-02-19 07:57:14 | ERROR | stderr | Traceback (most recent call last):
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/api_server.py", line 314, in <module>
+2026-02-19 07:57:14 | ERROR | stderr |     worker = ModelWorker(model_path=args.model_path, device=args.device, enable_tex=args.enable_tex,
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/api_server.py", line 159, in __init__
+2026-02-19 07:57:14 | ERROR | stderr |     self.pipeline = Hunyuan3DDiTFlowMatchingPipeline.from_pretrained(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/hy3dgen/shapegen/pipelines.py", line 219, in from_pretrained
+2026-02-19 07:57:14 | ERROR | stderr |     config_path, ckpt_path = smart_load_model(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/hy3dgen/shapegen/utils.py", line 116, in smart_load_model
+2026-02-19 07:57:14 | ERROR | stderr |     raise e
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/hy3dgen/shapegen/utils.py", line 105, in smart_load_model
+2026-02-19 07:57:14 | ERROR | stderr |     path = snapshot_download(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+2026-02-19 07:57:14 | ERROR | stderr |     return fn(*args, **kwargs)
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/_snapshot_download.py", line 332, in snapshot_download
+2026-02-19 07:57:14 | ERROR | stderr |     thread_map(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/tqdm/contrib/concurrent.py", line 69, in thread_map
+2026-02-19 07:57:14 | ERROR | stderr |     return _executor_map(ThreadPoolExecutor, fn, *iterables, **tqdm_kwargs)
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/tqdm/contrib/concurrent.py", line 51, in _executor_map
+2026-02-19 07:57:14 | ERROR | stderr |     return list(tqdm_class(ex.map(fn, *iterables, chunksize=chunksize), **kwargs))
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/tqdm/std.py", line 1181, in __iter__
+2026-02-19 07:57:14 | ERROR | stderr |     for obj in iterable:
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/lib/python3.10/concurrent/futures/_base.py", line 621, in result_iterator
+2026-02-19 07:57:14 | ERROR | stderr |     yield _result_or_cancel(fs.pop())
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/lib/python3.10/concurrent/futures/_base.py", line 319, in _result_or_cancel
+2026-02-19 07:57:14 | ERROR | stderr |     return fut.result(timeout)
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/lib/python3.10/concurrent/futures/_base.py", line 458, in result
+2026-02-19 07:57:14 | ERROR | stderr |     return self.__get_result()
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+2026-02-19 07:57:14 | ERROR | stderr |     raise self._exception
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/.local/share/uv/python/cpython-3.10.17-macos-aarch64-none/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+2026-02-19 07:57:14 | ERROR | stderr |     result = self.fn(*self.args, **self.kwargs)
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/_snapshot_download.py", line 306, in _inner_hf_hub_download
+2026-02-19 07:57:14 | ERROR | stderr |     return hf_hub_download(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+2026-02-19 07:57:14 | ERROR | stderr |     return fn(*args, **kwargs)
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1014, in hf_hub_download
+2026-02-19 07:57:14 | ERROR | stderr |     return _hf_hub_download_to_cache_dir(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1175, in _hf_hub_download_to_cache_dir
+2026-02-19 07:57:14 | ERROR | stderr |     _download_to_tmp_and_move(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1727, in _download_to_tmp_and_move
+2026-02-19 07:57:14 | ERROR | stderr |     xet_get(
+2026-02-19 07:57:14 | ERROR | stderr |   File "/Users/abhisheksonkar/Hunyuan3D-2/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 633, in xet_get
+2026-02-19 07:57:14 | ERROR | stderr |     download_files(
+2026-02-19 07:57:14 | ERROR | stderr | RuntimeError: Data processing error: CAS service error : ReqwestMiddleware Error: Request failed after 5 retries
