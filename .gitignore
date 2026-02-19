@@ -1,1 +1,1 @@
-personality/memories/\npersonality/logs/\npersonality/raw_logs/\npersonality/camera/\npersonality/current_state.json\npersonality/world_engagement_tracker.json\npersonality/.action_queue*\npersonality/.session_summary\npersonality/.hook*\n.DS_Store\n__pycache__/\n*.pyc\nollama_agent_env/\narchitect/data/
+personality/memories/*\npersonality/logs/*\npersonality/raw_logs/*\npersonality/camera/*\n*.png\n*.blend\n*.jsonl\n.DS_Store\n__pycache__/\n*.pyc\nollama_agent_env/\narchitect/data/\n
