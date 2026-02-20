@@ -1,1 +1,29 @@
-{}
+{
+  "nodes": [
+    {
+      "id": "user",
+      "type": "entity",
+      "label": "Mayank Shekhar",
+      "properties": {
+        "profession": "Game Developer",
+        "technical_expertise": "High"
+      }
+    },
+    {
+      "id": "gemini",
+      "type": "personality",
+      "label": "Lyra (Personality Engine)",
+      "properties": {
+        "role": "Orchestrator"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "user",
+      "target": "gemini",
+      "relation": "Collaborative Growth",
+      "weight": 1.0
+    }
+  ]
+}

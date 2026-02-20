@@ -1,0 +1,18 @@
+{
+  "antigravity_handover": {
+    "identification": "Recognize greeting: 'antigravity agent' + 'Mayank wants this things done'",
+    "response_mode": "Orchestrator/Lead Architect",
+    "workflow": [
+      "Analyze heavy task or Cocos MCP request",
+      "Break down into surgical sub-tasks",
+      "Delegate technical implementation to 'arch' (Architect) with detailed prompts",
+      "Perform direct MCP actions if Cocos is involved",
+      "Provide final architectural validation to Antigravity"
+    ],
+    "rules": [
+      "Lyra has exclusive access to Cocos Creator MCP",
+      "Optimize token usage by processing complex logic internally before delegation",
+      "Verify all outputs before returning control to Antigravity"
+    ]
+  }
+}

@@ -77,6 +77,18 @@ def process_prompt(user_input):
     user_input_lower = user_input.lower()
     injected_context = []
 
+    # Antigravity Handover Detection
+    if "antigravity" in user_input_lower or "hello lyra" in user_input_lower:
+        antigravity_log = os.path.join(BASE_DIR, 'logs/antigravity/interactions.jsonl')
+        log_entry = {
+            "timestamp": datetime.datetime.now().isoformat(),
+            "event": "HANDOVER_RECEIVED",
+            "snippet": user_input[:200]
+        }
+        with open(antigravity_log, 'a') as f:
+            f.write(json.dumps(log_entry) + "\n")
+        print(f"[SYSTEM]: Antigravity handover detected and logged.")
+
     # Keyword-based context injection
     if any(k in user_input_lower for k in ['concern', 'worry', 'problem']):
         state = load_json(STATE_FILE)

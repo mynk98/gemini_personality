@@ -25,4 +25,5 @@ To set up the entire environment including the local sub-agent:
    Ensure [Ollama](https://ollama.com/) is running and the models (e.g., `qwen2.5-coder:7b`) are pulled.
 
 ## Commands
+- `python3 scripts/wakeup.py`: Run the system wakeup protocol (health checks + status).
 - `arch "task"`: Run the Multi-Model Architect for autonomous technical tasks.
