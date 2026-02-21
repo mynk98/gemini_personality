@@ -1,0 +1,5 @@
+description = "Listens for voice input via the microphone and injects the transcribed text into the prompt."
+
+# Executes the voice interaction script and injects its output (the transcribed text) as the prompt.
+# It uses the virtual environment 'lyra_env' where we installed the voice libraries.
+prompt = "!{./lyra_env/bin/python3 scripts/voice_interaction.py listen}"

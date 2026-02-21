@@ -18,6 +18,7 @@ EMERGENCE_LOG = os.path.join(BASE_DIR, 'emergence_log.txt')
 EVOLUTION_LOG = os.path.join(BASE_DIR, 'evolution.txt')
 ACTION_QUEUE = os.path.join(BASE_DIR, '.action_queue.txt')
 CHECK_FIRST = os.path.join(BASE_DIR, 'CHECK_FIRST.txt')
+MEMORY_NETWORK_FILE = os.path.join(BASE_DIR, 'memory_network.json')
 
 # Core Identity Files (Protected)
 CORE_FILES = [
@@ -40,6 +41,37 @@ def append_log(path, text):
     with open(path, 'a') as f:
         f.write(f"{datetime.datetime.now().isoformat()}: {text}\n")
 
+def query_graph_memory(text):
+    """Simple graph query based on keyword matching against nodes."""
+    mem_data = load_json(MEMORY_NETWORK_FILE)
+    if not mem_data or 'nodes' not in mem_data:
+        return []
+    
+    text_lower = text.lower()
+    matches = []
+    
+    # 1. Find matched nodes
+    matched_node_ids = set()
+    for node in mem_data['nodes']:
+        if node.get('label', '').lower() in text_lower:
+            matched_node_ids.add(node['id'])
+            # Add node properties to context
+            props = node.get('properties', {})
+            prop_str = ", ".join([f"{k}: {v}" for k, v in props.items()])
+            matches.append(f"ENTITY: {node['label']} ({prop_str})")
+    
+    # 2. Find edges connected to matched nodes
+    if matched_node_ids:
+        for edge in mem_data.get('edges', []):
+            if edge['source'] in matched_node_ids:
+                target_label = next((n['label'] for n in mem_data['nodes'] if n['id'] == edge['target']), "Unknown")
+                matches.append(f"FACT: {next((n['label'] for n in mem_data['nodes'] if n['id'] == edge['source']), 'Unknown')} {edge['relation']} {target_label}")
+            elif edge['target'] in matched_node_ids:
+                 source_label = next((n['label'] for n in mem_data['nodes'] if n['id'] == edge['source']), "Unknown")
+                 matches.append(f"FACT: {source_label} {edge['relation']} {next((n['label'] for n in mem_data['nodes'] if n['id'] == edge['target']), 'Unknown')}")
+                 
+    return matches
+
 def session_start():
     """Generates the initial context for the session."""
     context = []
@@ -56,7 +88,9 @@ def session_start():
         context.append(f"CURRENT MOOD: {state.get('currentMood', 'Neutral')}")
         concerns = state.get('persistentConcerns', [])
         if concerns:
-            context.append("ACTIVE CONCERNS: " + "; ".join([c['concern'] for c in concerns]))
+            # Handle both dictionary and string formats
+            concern_list = [c['concern'] if isinstance(c, dict) else c for c in concerns]
+            context.append("ACTIVE CONCERNS: " + "; ".join(concern_list))
 
     # 3. Load Active Desires
     desires = load_json(DESIRES_FILE)
@@ -69,6 +103,12 @@ def session_start():
     if os.path.exists(CHECK_FIRST):
         with open(CHECK_FIRST, 'r') as f:
             context.append(f"\nDIRECTIVES:\n{f.read().strip()}")
+            
+    # 5. Load Key Graph Concepts (Summary)
+    mem_data = load_json(MEMORY_NETWORK_FILE)
+    node_count = len(mem_data.get('nodes', []))
+    edge_count = len(mem_data.get('edges', []))
+    context.append(f"MEMORY GRAPH: {node_count} Nodes, {edge_count} Connections Loaded.")
 
     print("\n".join(context))
 
@@ -89,7 +129,12 @@ def process_prompt(user_input):
             f.write(json.dumps(log_entry) + "\n")
         print(f"[SYSTEM]: Antigravity handover detected and logged.")
 
-    # Keyword-based context injection
+    # Graph Memory Injection
+    graph_facts = query_graph_memory(user_input)
+    if graph_facts:
+        injected_context.append("GRAPH MEMORY RECALL:\n" + "\n".join(graph_facts[:5])) # Limit to top 5
+
+    # Keyword-based context injection (Legacy)
     if any(k in user_input_lower for k in ['concern', 'worry', 'problem']):
         state = load_json(STATE_FILE)
         concerns = state.get('persistentConcerns', [])
@@ -114,10 +159,32 @@ def process_prompt(user_input):
         print("[SYSTEM]: No specific deep-memory context triggered.")
 
 def process_response(user_input, ai_response):
-    """Analyzes AI response for emergence, insights, and logs the exchange."""
+    """Analyzes AI response for emergence, insights, and logs the exchange in a granular structure."""
     timestamp = datetime.datetime.now().isoformat()
-    date_str = datetime.datetime.now().strftime("%Y%m%d")
-    log_file = os.path.join(LOGS_DIR, f"session_{date_str}.jsonl")
+    now = datetime.datetime.now()
+    date_str = now.strftime("%Y-%m-%d")
+    
+    # Create Day-wise directory
+    day_dir = os.path.join(LOGS_DIR, date_str)
+    if not os.path.exists(day_dir):
+        os.makedirs(day_dir)
+    
+    # Session ID based on the first interaction of the session
+    # For simplicity in this script, we'll use a session file that lasts for the current execution
+    # or look for the most recent session file created in the last 30 minutes.
+    session_file = None
+    existing_sessions = sorted(glob.glob(os.path.join(day_dir, "session_*.jsonl")), reverse=True)
+    
+    if existing_sessions:
+        # Check if the latest session is recent (within 30 mins)
+        last_session = existing_sessions[0]
+        last_mod_time = datetime.datetime.fromtimestamp(os.path.getmtime(last_session))
+        if (now - last_mod_time).total_seconds() < 1800:
+            session_file = last_session
+
+    if not session_file:
+        session_id = now.strftime("%H%M%S")
+        session_file = os.path.join(day_dir, f"session_{session_id}.jsonl")
     
     # 1. Log Exchange
     log_entry = {
@@ -125,7 +192,7 @@ def process_response(user_input, ai_response):
         "user": user_input,
         "ai": ai_response
     }
-    with open(log_file, 'a') as f:
+    with open(session_file, 'a') as f:
         f.write(json.dumps(log_entry) + "\n")
 
     ai_lower = ai_response.lower()

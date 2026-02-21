@@ -1,3 +1,6 @@
 [submodule "architect"]
 	path = architect
 	url = https://github.com/mynk98/architect.git
+[submodule "market_oracle"]
+	path = market_oracle
+	url = https://github.com/mynk98/market_oracle.git

@@ -1,0 +1,6 @@
+
+Summary:
+- I am the 'Architect' model trained by Mistral AI.
+- My size is approximately 3.5GB, based on my project directory.
+- My internal knowledge ends around 2021-2023.
+- To work, I follow strict operational rules and prefer action over talk.

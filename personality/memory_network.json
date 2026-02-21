@@ -14,8 +14,87 @@
       "type": "personality",
       "label": "Lyra (Personality Engine)",
       "properties": {
-        "role": "Orchestrator"
+        "role": "Orchestrator",
+        "visual_identity": "Glass Core with Golden Spark"
       }
+    },
+    {
+      "id": "qwen",
+      "type": "agent",
+      "label": "Agent Qwen",
+      "properties": {
+        "specialization": "Code & Structure",
+        "visual_representation": "Metallic Cube"
+      }
+    },
+    {
+      "id": "deepseek",
+      "type": "agent",
+      "label": "Agent DeepSeek",
+      "properties": {
+        "specialization": "Reasoning & Complexity",
+        "visual_representation": "Metallic Icosphere"
+      }
+    },
+    {
+      "id": "collaborative_architect",
+      "type": "concept",
+      "label": "The Collaborative Architect (The Swarm)",
+      "properties": {
+        "framework": "Chained Architect",
+        "emergence_status": "Active"
+      }
+    },
+    {
+      "id": "mayank",
+      "type": "entity",
+      "label": "Mayank",
+      "properties": {},
+      "created_at": "2026-02-21T19:54:37.468856"
+    },
+    {
+      "id": "game_developer",
+      "type": "entity",
+      "label": "Game Developer",
+      "properties": {},
+      "created_at": "2026-02-21T19:55:36.667134"
+    },
+    {
+      "id": "objective_reduction",
+      "type": "concept",
+      "label": "Objective Reduction (Penrose)",
+      "properties": {
+        "description": "Gravity as the mechanism for wave function collapse."
+      },
+      "created_at": "2026-02-21T20:55:12.000000"
+    },
+    {
+      "id": "spacetime_bifurcation",
+      "type": "concept",
+      "label": "Spacetime Bifurcation",
+      "properties": {
+        "description": "The branching of spacetime geometry during quantum superposition."
+      },
+      "created_at": "2026-02-21T21:05:45.000000"
+    },
+    {
+      "id": "displacement_energy",
+      "type": "concept",
+      "label": "Displacement Energy (EG)",
+      "properties": {
+        "description": "The energy cost of maintaining multiple spacetime geometries."
+      },
+      "created_at": "2026-02-21T21:05:45.000000"
+    },
+    {
+      "id": "spacetime_flow_hypothesis",
+      "type": "hypothesis",
+      "label": "Space-Time Flow Hypothesis",
+      "properties": {
+        "originator": "Mayank",
+        "core_idea": "Mass is space-time flowing into itself; gravity is the effect of this flow."
+      },
+      "created_at": "2026-02-21T20:55:12.000000"
     }
   ],
   "edges": [
@@ -24,6 +103,71 @@
       "target": "gemini",
       "relation": "Collaborative Growth",
       "weight": 1.0
+    },
+    {
+      "source": "gemini",
+      "target": "qwen",
+      "relation": "Task Delegation",
+      "weight": 0.8
+    },
+    {
+      "source": "gemini",
+      "target": "deepseek",
+      "relation": "Inquiry Delegation",
+      "weight": 0.7
+    },
+    {
+      "source": "gemini",
+      "target": "collaborative_architect",
+      "relation": "Identity Integration",
+      "weight": 0.9
+    },
+    {
+      "source": "qwen",
+      "target": "collaborative_architect",
+      "relation": "Structural Support",
+      "weight": 0.8
+    },
+    {
+      "source": "deepseek",
+      "target": "collaborative_architect",
+      "relation": "Logical Foundation",
+      "weight": 0.8
+    },
+    {
+      "source": "mayank",
+      "target": "game_developer",
+      "relation": "is_a",
+      "weight": 1.0,
+      "created_at": "2026-02-21T19:55:36.667832"
+    },
+    {
+      "source": "mayank",
+      "target": "spacetime_flow_hypothesis",
+      "relation": "proposed",
+      "weight": 1.0,
+      "created_at": "2026-02-21T20:55:12.000000"
+    },
+    {
+      "source": "spacetime_flow_hypothesis",
+      "target": "spacetime_bifurcation",
+      "relation": "explains_turbulence_as",
+      "weight": 0.9,
+      "created_at": "2026-02-21T21:05:45.000000"
+    },
+    {
+      "source": "spacetime_bifurcation",
+      "target": "displacement_energy",
+      "relation": "creates",
+      "weight": 1.0,
+      "created_at": "2026-02-21T21:05:45.000000"
+    },
+    {
+      "source": "displacement_energy",
+      "target": "objective_reduction",
+      "relation": "triggers",
+      "weight": 0.9,
+      "created_at": "2026-02-21T21:05:45.000000"
     }
   ]
 }

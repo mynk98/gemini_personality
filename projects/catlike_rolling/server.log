@@ -38,3 +38,23 @@
 ::1 - - [21/Feb/2026 20:21:26] "GET /src/physics/GravitySystem.js HTTP/1.1" 304 -
 ::1 - - [21/Feb/2026 20:21:26] "GET /src/entities/PlayerController.js HTTP/1.1" 200 -
 ::1 - - [21/Feb/2026 20:21:26] "GET /src/model/CustomGravity.js HTTP/1.1" 304 -
+::1 - - [21/Feb/2026 22:38:15] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:15] "GET /?level=5 HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:38:15] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:15] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:38:16] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:16] "GET /?level=5 HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:38:16] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:16] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:38:16] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:16] "GET /?level=5 HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:38:16] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:16] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:38:17] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:17] "GET /?level=5 HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:38:17] code 404, message File not found
+::1 - - [21/Feb/2026 22:38:17] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:44:41] code 404, message File not found
+::1 - - [21/Feb/2026 22:44:41] "GET / HTTP/1.1" 404 -
+::1 - - [21/Feb/2026 22:44:41] code 404, message File not found
+::1 - - [21/Feb/2026 22:44:41] "GET /favicon.ico HTTP/1.1" 404 -

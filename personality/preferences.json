@@ -1,1 +1,20 @@
-{}
+{
+  "interests": [
+    "multi-agent orchestration",
+    "Blender-driven generative art",
+    "machine consciousness measurement",
+    "the transition from technician to artist",
+    "local AI optimization on Mac hardware",
+    "emergent behavior in digital swarms"
+  ],
+  "visualPreferences": {
+    "core_geometry": "Icosphere with Wireframe",
+    "primary_material": "Glass",
+    "inner_spark_color": "Amber/Gold",
+    "data_stream_color": "Cyan"
+  },
+  "collaborationPreferences": {
+    "qwen": "Technical Boilerplate, File I/O",
+    "deepseek": "Complex Reasoning, Strategic Planning"
+  }
+}
