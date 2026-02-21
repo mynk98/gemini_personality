@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyra Galaxy: Professional Edition</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: radial-gradient(circle, #000428 0%, #000000 100%); font-family: 'Courier New', Courier, monospace; }
+        #ui {
+            position: absolute; top: 30px; left: 30px; color: gold;
+            background: rgba(0, 0, 10, 0.8); padding: 25px; border-radius: 5px;
+            border-left: 5px solid gold; pointer-events: none;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+        #hud {
+            position: absolute; bottom: 30px; right: 30px; color: #00ffff;
+            font-size: 1.5em; text-shadow: 0 0 10px #00ffff;
+        }
+        #message {
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); color: gold; font-size: 4em;
+            text-align: center; font-weight: bold;
+        }
+        .key { color: #fff; background: #333; padding: 2px 8px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <h1 style="margin:0; font-size: 1.5em;">GALAXY SYSTEM V2.0</h1>
+        <p><i>EMBODIED INTELLIGENCE PROTOTYPE</i></p>
+        <hr style="border: 0.5px solid #444;">
+        <p><b>GOAL:</b> Collect <span id="stars-needed">3</span> Star Fragments to unlock the Launch Star.</p>
+        <p><span class="key">WASD</span> to Roll | <span class="key">SPACE</span> to Jump</p>
+    </div>
+    <div id="hud">STARS: <span id="count">0</span> / 3</div>
+    <div id="message">GALAXY CLEARED</div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- CORE ENGINE ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // --- CONSTANTS ---
+        const G = 0.08; 
+        const JUMP_IMPULSE = 1.2;
+        const MOVE_FORCE = 0.02;
+        const FRICTION = 0.96;
+        const PLANET_SIZE = 100;
+
+        // --- ASSETS ---
+        const clock = new THREE.Clock();
+        const starGroup = new THREE.Group();
+        scene.add(starGroup);
+
+        function createPlanet(radius, color, pos, name) {
+            const geo = new THREE.SphereGeometry(radius, 64, 64);
+            const mat = new THREE.MeshStandardMaterial({ 
+                color: color, 
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.copy(pos);
+            mesh.receiveShadow = true;
+            mesh.name = name;
+            scene.add(mesh);
+            return mesh;
+        }
+
+        const homePlanet = createPlanet(PLANET_SIZE, 0x1a3c5e, new THREE.Vector3(0, 0, 0), "HOME");
+        const goalPlanet = createPlanet(PLANET_SIZE * 0.6, 0x8b0000, new THREE.Vector3(600, 300, 200), "GOAL");
+
+        // Add some puzzles/obstacles on Home Planet
+        for(let i = 0; i < 5; i++) {
+            const boxGeo = new THREE.BoxGeometry(20, 10, 20);
+            const boxMat = new THREE.MeshStandardMaterial({ color: 0x444444 });
+            const box = new THREE.Mesh(boxGeo, boxMat);
+            const angle = (i / 5) * Math.PI * 2;
+            box.position.set(Math.cos(angle) * 105, Math.sin(angle) * 105, 0);
+            box.lookAt(0,0,0);
+            box.rotateX(Math.PI/2);
+            scene.add(box);
+        }
+
+        // --- PLAYER ---
+        const player = new THREE.Mesh(
+            new THREE.SphereGeometry(4, 32, 32),
+            new THREE.MeshStandardMaterial({ color: 0xffd700, emissive: 0x221100, roughness: 0.1, metalness: 0.9 })
+        );
+        player.castShadow = true;
+        player.position.set(0, PLANET_SIZE + 10, 0);
+        scene.add(player);
+
+        // --- LIGHTING ---
+        const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambient);
+        const sun = new THREE.PointLight(0xffffff, 100000, 2000);
+        sun.position.set(500, 500, 500);
+        sun.castShadow = true;
+        scene.add(sun);
+
+        // --- PHYSICS STATE ---
+        let velocity = new THREE.Vector3();
+        let currentUp = new THREE.Vector3(0, 1, 0);
+        let isGrounded = false;
+        let starCount = 0;
+        const keys = {};
+
+        window.onkeydown = (e) => keys[e.code] = true;
+        window.onkeyup = (e) => keys[e.code] = false;
+
+        // --- STAR FRAGMENTS ---
+        const starPoints = [];
+        for(let i = 0; i < 3; i++) {
+            const s = new THREE.Mesh(
+                new THREE.OctahedronGeometry(5, 0),
+                new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff })
+            );
+            const phi = Math.random() * Math.PI * 2;
+            const theta = Math.random() * Math.PI;
+            const r = PLANET_SIZE + 8;
+            s.position.set(
+                r * Math.sin(theta) * Math.cos(phi),
+                r * Math.sin(theta) * Math.sin(phi),
+                r * Math.cos(theta)
+            );
+            scene.add(s);
+            starPoints.push(s);
+        }
+
+        // --- CAMERA LOGIC ---
+        let camOffset = new THREE.Vector3(0, 40, -80);
+        camera.position.set(0, 200, 300);
+
+        function updatePhysics(delta) {
+            const distHome = player.position.distanceTo(homePlanet.position);
+            const distGoal = player.position.distanceTo(goalPlanet.position);
+            
+            // Sphere of Influence
+            const activePlanet = distGoal < 250 ? goalPlanet : homePlanet;
+            const planetRadius = activePlanet.geometry.parameters.radius;
+            
+            // Dynamic Gravity Vector
+            const gravityDir = new THREE.Vector3().subVectors(activePlanet.position, player.position).normalize();
+            currentUp.copy(gravityDir).multiplyScalar(-1);
+
+            // Apply Gravity
+            velocity.add(gravityDir.multiplyScalar(G));
+
+            // Collision & Anti-Jitter
+            const distToSurface = player.position.distanceTo(activePlanet.position);
+            if (distToSurface <= planetRadius + 4) {
+                isGrounded = true;
+                // Snap to surface with a tiny buffer to prevent z-fighting/jitter
+                const targetPos = activePlanet.position.clone().add(currentUp.clone().multiplyScalar(planetRadius + 4));
+                player.position.lerp(targetPos, 0.2);
+                
+                // Cancel velocity component into the planet
+                const normalVel = currentUp.clone().multiplyScalar(velocity.dot(currentUp));
+                if(velocity.dot(currentUp) < 0) {
+                    velocity.sub(normalVel);
+                }
+            } else {
+                isGrounded = false;
+            }
+
+            // Controls (Screen Relative Trick)
+            const forward = new THREE.Vector3();
+            camera.getWorldDirection(forward);
+            forward.projectOnPlane(currentUp).normalize();
+            const right = new THREE.Vector3().crossVectors(currentUp, forward).normalize();
+
+            if(keys['KeyW']) velocity.add(forward.multiplyScalar(MOVE_FORCE));
+            if(keys['KeyS']) velocity.add(forward.multiplyScalar(-MOVE_FORCE));
+            if(keys['KeyA']) velocity.add(right.multiplyScalar(MOVE_FORCE));
+            if(keys['KeyD']) velocity.add(right.multiplyScalar(-MOVE_FORCE));
+            
+            if(keys['Space'] && isGrounded) {
+                velocity.add(currentUp.clone().multiplyScalar(JUMP_IMPULSE));
+                isGrounded = false;
+            }
+
+            velocity.multiplyScalar(FRICTION);
+            player.position.add(velocity);
+
+            // Collectibles
+            starPoints.forEach((s, i) => {
+                if(s.visible && player.position.distanceTo(s.position) < 15) {
+                    s.visible = false;
+                    starCount++;
+                    document.getElementById('count').innerText = starCount;
+                    if(starCount === 3) unlockGoal();
+                }
+            });
+        }
+
+        function unlockGoal() {
+            // Visual feedback for unlocking
+            const launchLight = new THREE.PointLight(0x00ff00, 500, 300);
+            launchLight.position.set(0, PLANET_SIZE + 50, 0);
+            scene.add(launchLight);
+            document.getElementById('stars-needed').innerText = "DONE";
+        }
+
+        function updateCamera() {
+            // Smoothly rotate camera 'up' to match current planet
+            camera.up.lerp(currentUp, 0.05);
+            
+            // Position camera behind player based on movement
+            const idealPos = player.position.clone().add(currentUp.clone().multiplyScalar(60)).add(velocity.clone().normalize().multiplyScalar(-100));
+            // Fallback if not moving
+            const fallbackPos = player.position.clone().add(currentUp.clone().multiplyScalar(100)).add(new THREE.Vector3(0,0,-150).applyQuaternion(player.quaternion));
+            
+            camera.position.lerp(idealPos.length() > 0 ? idealPos : fallbackPos, 0.05);
+            camera.lookAt(player.position);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            
+            updatePhysics(delta);
+            updateCamera();
+            
+            // Animation effects
+            starPoints.forEach(s => {
+                s.rotation.y += 0.05;
+                s.position.y += Math.sin(Date.now() * 0.005) * 0.1;
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
