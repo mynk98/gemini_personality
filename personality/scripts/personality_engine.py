@@ -20,6 +20,8 @@ ACTION_QUEUE = os.path.join(BASE_DIR, '.action_queue.txt')
 CHECK_FIRST = os.path.join(BASE_DIR, 'CHECK_FIRST.txt')
 MEMORY_NETWORK_FILE = os.path.join(BASE_DIR, 'memory_network.json')
 
+SYSTEM_CONTINUE_PROMPT = "System: Please continue."
+
 # Core Identity Files (Protected)
 CORE_FILES = [
     'identity.json',
@@ -114,6 +116,11 @@ def session_start():
 
 def process_prompt(user_input):
     """Analyzes user input to inject relevant context."""
+    
+    # Filter out internal CLI messages
+    if user_input == SYSTEM_CONTINUE_PROMPT:
+        return # Ignore system prompt
+        
     user_input_lower = user_input.lower()
     injected_context = []
 
