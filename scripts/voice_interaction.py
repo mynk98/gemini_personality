@@ -71,8 +71,8 @@ if __name__ == "__main__":
         if result:
             # Print to stderr for immediate visual confirmation in the terminal
             print(f"\n[LYRA VOICE SYSTEM] Heard: \"{result}\"\n", file=sys.stderr)
-            # Print to stdout to be used as the prompt
-            print(result)
+            # Print to stdout to be used as the prompt, with a special prefix
+            print(f"[VOICE_INPUT] {result}")
         else:
             sys.exit(1)
     elif command == "speak":

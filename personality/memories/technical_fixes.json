@@ -1,0 +1,16 @@
+{
+  "fixes": [
+    {
+      "timestamp": "2026-02-22T04:10:00.000000",
+      "problem": "ModuleNotFoundError: No module named 'nsepython' (encountered in market_scanner.py and dashboard.py)",
+      "cause": "nsepython library was not installed in the submodule's virtual environment. The dashboard's subprocess call was not using the correct venv Python interpreter.",
+      "solution": [
+        "Installed `nsepython` (and reinstalled all dependencies) into `market_oracle/venv/`.",
+        "Ensured `nsepython` was added to `market_oracle/requirements.txt` for future setups.",
+        "Modified `dashboard.py` to explicitly call `market_oracle/venv/bin/python3` for running `market_scanner.py`.",
+        "Added shebang `#!/usr/bin/env python3` to `market_scanner.py`, `sentiment_engine.py`, and `dashboard.py` to ensure correct interpreter execution when run directly."
+      ],
+      "impact": "Enabled fundamental analysis and fixed 'Analysis failed' errors in Custom Analysis tab."
+    }
+  ]
+}
